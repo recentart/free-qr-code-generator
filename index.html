@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Free QR Code Generator – URL, Wi-Fi, Text, Email &amp; Phone</title>
+  <meta name="description" content="Create a free QR code for a website link, Wi-Fi network, text, email or phone number. No sign-up, made in your browser, download as PNG or SVG. Static codes never expire.">
+  <meta name="color-scheme" content="light dark">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Free QR Code Generator">
+  <meta property="og:description" content="Create QR codes for links, Wi-Fi, text, email and phone numbers. Free, private, and downloadable as PNG or SVG.">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="favicon.ico" sizes="32x32">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="stylesheet" href="styles.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Free QR Code Generator",
+    "description": "Create static QR codes for URLs, Wi-Fi networks, plain text, email and phone numbers. Generated locally in the browser and downloadable as PNG or SVG.",
+    "applicationCategory": "UtilitiesApplication",
+    "operatingSystem": "Any",
+    "browserRequirements": "Requires JavaScript",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+  }
+  </script>
+  <script src="vendor/qrcode-generator-2.0.4.js" defer></script>
+  <script src="js/logic.js" defer></script>
+  <script src="js/app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#generator">Skip to the generator</a>
+
+  <main class="wrap">
+    <header class="intro">
+      <h1>Free QR Code Generator</h1>
+      <p class="lede">Make a QR code for a website, Wi-Fi network, text, email address or phone number, then download it as a PNG or SVG. It’s free, needs no account, and the codes never expire.</p>
+      <p class="privacy">
+        <svg class="privacy-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5l-8-3Zm-1.2 14.2-3.5-3.5 1.4-1.4 2.1 2.1 4.6-4.6 1.4 1.4-6 6Z"/></svg>
+        <span>Your QR code is generated locally in your browser. Your data is not uploaded to our server.</span>
+      </p>
+      <noscript><p class="notice notice-error">This generator needs JavaScript turned on. It runs entirely in your browser.</p></noscript>
+    </header>
+
+    <section class="generator" id="generator" aria-label="QR code generator">
+      <form id="qr-form" class="panel" novalidate>
+        <fieldset class="type-picker">
+          <legend>What should the QR code open?</legend>
+          <div class="segmented">
+            <input type="radio" name="type" id="type-url" value="url" checked><label for="type-url">URL</label>
+            <input type="radio" name="type" id="type-text" value="text"><label for="type-text">Text</label>
+            <input type="radio" name="type" id="type-email" value="email"><label for="type-email">Email</label>
+            <input type="radio" name="type" id="type-phone" value="phone"><label for="type-phone">Phone</label>
+            <input type="radio" name="type" id="type-wifi" value="wifi"><label for="type-wifi">Wi-Fi</label>
+          </div>
+        </fieldset>
+
+        <div class="fields" data-type="url">
+          <div class="field">
+            <label for="url">Website address</label>
+            <input id="url" type="text" inputmode="url" autocomplete="url" autocapitalize="off" spellcheck="false" placeholder="example.com" aria-describedby="url-hint url-error">
+            <p class="hint" id="url-hint">https:// is added for you if you leave it out.</p>
+            <p class="error" id="url-error" hidden></p>
+          </div>
+        </div>
+
+        <div class="fields" data-type="text" hidden>
+          <div class="field">
+            <label for="text">Text</label>
+            <textarea id="text" rows="5" aria-describedby="text-hint text-error"></textarea>
+            <p class="hint" id="text-hint">Any language, emoji and line breaks work. Shorter text makes a simpler code that scans more easily.</p>
+            <p class="error" id="text-error" hidden></p>
+          </div>
+        </div>
+
+        <div class="fields" data-type="email" hidden>
+          <div class="field">
+            <label for="email">Email address</label>
+            <input id="email" type="email" autocomplete="email" autocapitalize="off" spellcheck="false" placeholder="name@example.com" aria-describedby="email-error">
+            <p class="error" id="email-error" hidden></p>
+          </div>
+          <div class="field">
+            <label for="subject">Subject <span class="optional">(optional)</span></label>
+            <input id="subject" type="text" aria-describedby="subject-error">
+            <p class="error" id="subject-error" hidden></p>
+          </div>
+          <div class="field">
+            <label for="body">Message <span class="optional">(optional)</span></label>
+            <textarea id="body" rows="4" aria-describedby="body-error"></textarea>
+            <p class="error" id="body-error" hidden></p>
+          </div>
+        </div>
+
+        <div class="fields" data-type="phone" hidden>
+          <div class="field">
+            <label for="phone">Phone number</label>
+            <input id="phone" type="tel" autocomplete="tel" placeholder="+1 555 123 4567" aria-describedby="phone-hint phone-error">
+            <p class="hint" id="phone-hint">Include the country code (for example +44) so the number works from anywhere.</p>
+            <p class="error" id="phone-error" hidden></p>
+          </div>
+        </div>
+
+        <div class="fields" data-type="wifi" hidden>
+          <div class="field">
+            <label for="ssid">Network name (SSID)</label>
+            <input id="ssid" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-describedby="ssid-hint ssid-error">
+            <p class="hint" id="ssid-hint">Type it exactly as it appears on your devices. Capital letters matter.</p>
+            <p class="error" id="ssid-error" hidden></p>
+          </div>
+          <div class="field">
+            <label for="security">Security</label>
+            <select id="security">
+              <option value="WPA" selected>WPA/WPA2</option>
+              <option value="WEP">WEP</option>
+              <option value="nopass">None (open network)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="password">Password</label>
+            <input id="password" type="password" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-describedby="password-hint password-error">
+            <p class="hint" id="password-hint">Not needed for open networks.</p>
+            <p class="error" id="password-error" hidden></p>
+          </div>
+          <div class="checks">
+            <label class="check"><input type="checkbox" id="show-password"> Show password</label>
+            <label class="check"><input type="checkbox" id="hidden"> Hidden network (name isn’t broadcast)</label>
+          </div>
+        </div>
+
+        <details class="options">
+          <summary>Size, colours and error correction</summary>
+          <div class="options-grid">
+            <div class="field">
+              <label for="size">Image size</label>
+              <select id="size">
+                <option value="256">256 × 256 px</option>
+                <option value="512">512 × 512 px</option>
+                <option value="1024" selected>1024 × 1024 px</option>
+                <option value="2048">2048 × 2048 px</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="ec">Error correction</label>
+              <select id="ec" aria-describedby="ec-hint">
+                <option value="L">Low (7%)</option>
+                <option value="M" selected>Medium (15%)</option>
+                <option value="Q">Quartile (25%)</option>
+                <option value="H">High (30%)</option>
+              </select>
+              <p class="hint" id="ec-hint">Higher levels scan better when scuffed, but make the code denser.</p>
+            </div>
+            <div class="field">
+              <label for="margin">Quiet zone (margin)</label>
+              <select id="margin">
+                <option value="0">None</option>
+                <option value="2">Small (2 modules)</option>
+                <option value="4" selected>Standard (4 modules)</option>
+                <option value="8">Large (8 modules)</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="fg">Foreground colour</label>
+              <div class="color-row"><input type="color" id="fg" value="#000000"><output id="fg-value" for="fg">#000000</output></div>
+            </div>
+            <div class="field">
+              <label for="bg">Background colour</label>
+              <div class="color-row"><input type="color" id="bg" value="#ffffff"><output id="bg-value" for="bg">#ffffff</output></div>
+            </div>
+          </div>
+        </details>
+
+        <div class="actions">
+          <button type="submit" class="btn btn-primary">Generate QR code</button>
+          <button type="reset" class="btn btn-quiet">Clear</button>
+        </div>
+      </form>
+
+      <section class="panel output" id="output" aria-labelledby="preview-heading">
+        <h2 id="preview-heading" class="output-title">Preview</h2>
+        <div class="preview is-empty" id="preview"><p>Your QR code will appear here.</p></div>
+        <div id="status" class="status" role="status" aria-live="polite"></div>
+        <div class="downloads">
+          <button type="button" class="btn btn-primary" id="download-png" disabled>Download PNG</button>
+          <button type="button" class="btn btn-secondary" id="download-svg" disabled>Download SVG</button>
+        </div>
+        <p class="meta" id="meta"></p>
+        <details class="payload" id="payload-details" hidden>
+          <summary>Show encoded data</summary>
+          <pre id="payload"></pre>
+        </details>
+      </section>
+    </section>
+
+    <!--
+      Reserved for a future advertisement. It is hidden and takes no space today.
+      See README.md ("Adding an ad later").
+    -->
+    <aside class="ad-slot" id="ad-slot" aria-label="Advertisement" hidden></aside>
+
+    <section class="info" aria-labelledby="how-heading">
+      <h2 id="how-heading">How to create a QR code</h2>
+      <ol class="steps">
+        <li><strong>Choose a type.</strong> Pick URL for a website, Wi-Fi to share your network, or Text, Email or Phone.</li>
+        <li><strong>Enter the details.</strong> The preview updates as you type. Try scanning it with your phone camera.</li>
+        <li><strong>Download.</strong> Save it as a PNG for documents and messages, or an SVG for print and design work.</li>
+      </ol>
+
+      <h2>Tips for codes that scan every time</h2>
+      <ul class="tips">
+        <li>Use a dark colour on a light background. Some scanners can’t read light-on-dark codes.</li>
+        <li>Keep the quiet zone (the empty border). Codes that touch text or pictures often fail to scan.</li>
+        <li>Print it at least 2&nbsp;cm (about 0.8&nbsp;in) wide, and bigger if people will scan it from further away.</li>
+        <li>Shorter content makes a simpler code. Use a short web address where you can.</li>
+        <li>Test the code with a phone before you print lots of copies.</li>
+      </ul>
+
+      <h2>Questions and answers</h2>
+      <div class="faq">
+        <details>
+          <summary>Is this QR code generator really free?</summary>
+          <p>Yes. There’s no sign-up and no watermark, and you can create and download as many codes as you like.</p>
+        </details>
+        <details>
+          <summary>Do the QR codes expire?</summary>
+          <p>No. These are static QR codes: the information is stored in the code itself, not on a server, so a code keeps working for as long as whatever it points to exists. A static code can’t be edited after you print it. If the details change, make a new code.</p>
+        </details>
+        <details>
+          <summary>Is my information private?</summary>
+          <p>Yes. The code is made by JavaScript running in your browser, and nothing you type is sent to our server or stored. That includes Wi-Fi passwords.</p>
+        </details>
+        <details>
+          <summary>How do I make a Wi-Fi QR code?</summary>
+          <p>Choose Wi-Fi, then enter the network name exactly as it appears (capital letters matter), the password and the security type. Guests point their phone camera at the code and tap to join. Most home routers use WPA/WPA2 (WPA3 networks usually work with this setting too).</p>
+        </details>
+        <details>
+          <summary>Should I download a PNG or an SVG?</summary>
+          <p>PNG works everywhere, including documents, websites, slides and messages. SVG is a vector file that stays sharp at any size, so it’s the better choice for printing and for design tools.</p>
+        </details>
+        <details>
+          <summary>What does error correction do?</summary>
+          <p>It adds backup data so a code can still be read if part of it is dirty or damaged. Medium suits most uses. Choose Quartile or High for printed codes that may get scuffed. Higher levels make the code denser.</p>
+        </details>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>QR codes are generated in your browser. No accounts, no tracking.</p>
+      <p class="small">QR Code is a registered trademark of DENSO WAVE INCORPORATED.</p>
+    </div>
+  </footer>
+</body>
+</html>
