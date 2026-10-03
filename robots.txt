@@ -1,5 +1,4 @@
 User-agent: *
 Allow: /
 
-# Replace example.com with your real domain before deploying.
-Sitemap: https://example.com/sitemap.xml
+Sitemap: https://free-qr-code-generator.freewebtoolss.workers.dev/sitemap.xml

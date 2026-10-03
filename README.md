@@ -39,13 +39,17 @@ node --test tests/logic.test.js
 
 ## Deploy
 
-The live site is https://free-qr-code-generator.freewebtoolss.workers.dev/. It deploys automatically from the GitHub repo [recentart/free-qr-code-generator](https://github.com/recentart/free-qr-code-generator): Cloudflare redeploys the repo root about a minute after each push.
+The live site is https://free-qr-code-generator.freewebtoolss.workers.dev/, a Cloudflare Worker that serves this folder as static files. To publish changes, run this from the folder (you need to be logged in to Cloudflare with `npx wrangler login`):
 
-**Keep the folders when uploading.** The page loads `js/…`, `vendor/…` and `ad/…`. If files are dragged into GitHub without their folders, the generator breaks.
+```bash
+npx wrangler deploy
+```
 
-Cloudflare reads `_headers` (security and caching headers) and uses `404.html` for unknown paths. `README.md` and `tests/` also get uploaded, which is harmless.
+The settings live in `wrangler.jsonc`. `.assetsignore` keeps the README, tests and deploy config off the live site. Cloudflare reads `_headers` (security and caching headers) and shows `404.html` for unknown paths.
 
-If the site moves to its own domain, replace `example.com` in `robots.txt` and `sitemap.xml`.
+The GitHub repo [recentart/free-qr-code-generator](https://github.com/recentart/free-qr-code-generator) holds the source. It is **not** connected to Cloudflare, so pushing to GitHub does not update the live site. **Keep the folders when uploading to GitHub:** the page loads `js/…`, `vendor/…` and `ad/…`, and a flattened upload breaks the generator.
+
+If the site moves to its own domain, update the addresses in `robots.txt` and `sitemap.xml`.
 
 ## Project structure
 
@@ -61,7 +65,8 @@ vendor/qrcode-generator-2.0.4.js   QR encoder library (pinned, unmodified)
 vendor/qrcode-generator-LICENSE.txt
 tests/logic.test.js                Unit tests for js/logic.js
 favicon.svg, favicon.ico, apple-touch-icon.png
-robots.txt, sitemap.xml            Replace example.com if the site gets its own domain
+robots.txt, sitemap.xml            Point at the live address
+wrangler.jsonc, .assetsignore      Cloudflare deploy settings (npx wrangler deploy)
 privacy.html                       Privacy policy, including the Adsterra disclosure
 _headers                           Cloudflare Pages headers (CSP, caching)
 404.html                           Not-found page
@@ -96,7 +101,7 @@ There is one small banner below the generator, labelled "Advertisement": 468×60
    '468x60': '//www.highperformanceformat.com/0123456789abcdef0123456789abcdef/invoke.js',
    ```
 
-3. Push to GitHub, keeping the folders.
+3. Run `npx wrangler deploy`, then push to GitHub as a backup.
 
 If only one size is filled in, screens that need the other size show no ad. If an entry doesn't look like an Adsterra address, the browser console shows an error naming it.
 

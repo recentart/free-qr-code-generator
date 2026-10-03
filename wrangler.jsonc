@@ -1,0 +1,11 @@
+// Deploy with: npx wrangler deploy
+// Publishes this folder as a static site at https://free-qr-code-generator.freewebtoolss.workers.dev/
+{
+  "name": "free-qr-code-generator",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": ".",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page"
+  }
+}
