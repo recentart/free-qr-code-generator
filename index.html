@@ -29,6 +29,8 @@
   <script src="vendor/qrcode-generator-2.0.4.js" defer></script>
   <script src="js/logic.js" defer></script>
   <script src="js/app.js" defer></script>
+  <script src="js/ads-config.js" defer></script>
+  <script src="js/ads.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#generator">Skip to the generator</a>
@@ -193,11 +195,11 @@
       </section>
     </section>
 
-    <!--
-      Reserved for a future advertisement. It is hidden and takes no space today.
-      See README.md ("Adding an ad later").
-    -->
-    <aside class="ad-slot" id="ad-slot" aria-label="Advertisement" hidden></aside>
+    <!-- Small Adsterra banner. Hidden until js/ads-config.js has a banner code (see README.md). -->
+    <aside class="ad-slot" id="ad-slot" data-ad-sizes="468x60 320x50" aria-label="Advertisement" hidden>
+      <p class="ad-label" aria-hidden="true">Advertisement</p>
+      <div class="ad-box"></div>
+    </aside>
 
     <section class="info" aria-labelledby="how-heading">
       <h2 id="how-heading">How to create a QR code</h2>
@@ -228,7 +230,7 @@
         </details>
         <details>
           <summary>Is my information private?</summary>
-          <p>Yes. The code is made by JavaScript running in your browser, and nothing you type is sent to our server or stored. That includes Wi-Fi passwords.</p>
+          <p>Yes. The code is made by JavaScript running in your browser, and nothing you type is sent to our server or stored. That includes Wi-Fi passwords. The site shows a small ad from Adsterra, which runs in a sealed-off frame that can’t see what you type. See the <a href="privacy.html">privacy policy</a>.</p>
         </details>
         <details>
           <summary>How do I make a Wi-Fi QR code?</summary>
@@ -248,7 +250,7 @@
 
   <footer class="site-footer">
     <div class="wrap">
-      <p>QR codes are generated in your browser. No accounts, no tracking.</p>
+      <p>QR codes are generated in your browser. No account needed. <a href="privacy.html">Privacy policy</a></p>
       <p class="small">QR Code is a registered trademark of DENSO WAVE INCORPORATED.</p>
     </div>
   </footer>

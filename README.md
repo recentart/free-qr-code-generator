@@ -12,9 +12,9 @@ The preview updates as you type. You can download the code as **PNG** (`qr-code.
 
 ## Privacy: everything happens in the browser
 
-The QR code is built by JavaScript on the user's device. There is no backend, database, account, analytics or third-party request. Nothing the user types leaves the browser, and downloads are made locally from in-memory blobs.
+The QR code is built by JavaScript on the user's device. There is no backend, database, account or analytics. The QR tool makes no network requests: nothing the user types leaves the browser, and downloads are made locally from in-memory blobs.
 
-On Cloudflare Pages, the `_headers` file adds a Content-Security-Policy with `connect-src 'none'`, so the page *cannot* send data anywhere, even by mistake.
+The only third-party content is the optional Adsterra banner (see [Ads](#ads-adsterra)), and it runs in a sandboxed frame that can't read the page. On Cloudflare, the `_headers` file gives the generator page a Content-Security-Policy with `connect-src 'none'`, so the page itself *cannot* send data anywhere, even by mistake.
 
 ## Run it locally
 
@@ -37,19 +37,15 @@ The payload and validation logic (`js/logic.js`) has unit tests that use Node's 
 node --test tests/logic.test.js
 ```
 
-## Deploy to Cloudflare Pages
+## Deploy
 
-1. **Set your domain.** Replace `example.com` in `robots.txt` and `sitemap.xml` with your real domain.
-2. **Deploy.** Use either option:
-   - **Direct upload (no Git):** in the Cloudflare dashboard, go to *Workers & Pages → Create → Pages → Upload assets*, then drag in this folder.
-   - **From Git:** push this folder to a GitHub or GitLab repository, then *Workers & Pages → Create → Pages → Connect to Git*. Use framework preset **None**, leave the **build command empty**, and set the **build output directory** to `/`.
-   - Or from the command line:
+The live site is https://free-qr-code-generator.freewebtoolss.workers.dev/. It deploys automatically from the GitHub repo [recentart/free-qr-code-generator](https://github.com/recentart/free-qr-code-generator): Cloudflare redeploys the repo root about a minute after each push.
 
-     ```bash
-     npx wrangler pages deploy . --project-name=free-qr-code-generator
-     ```
+**Keep the folders when uploading.** The page loads `js/…`, `vendor/…` and `ad/…`. If files are dragged into GitHub without their folders, the generator breaks.
 
-Cloudflare Pages reads `_headers` (security and caching headers) and uses `404.html` for unknown paths automatically. `README.md` and `tests/` also get uploaded. That's harmless, but you can deploy from a copy without them if you prefer.
+Cloudflare reads `_headers` (security and caching headers) and uses `404.html` for unknown paths. `README.md` and `tests/` also get uploaded, which is harmless.
+
+If the site moves to its own domain, replace `example.com` in `robots.txt` and `sitemap.xml`.
 
 ## Project structure
 
@@ -58,11 +54,15 @@ index.html                         Page markup, SEO meta tags, FAQ content
 styles.css                         All styles (light and dark themes)
 js/logic.js                        Payload building, validation, contrast check, SVG output (no DOM)
 js/app.js                          Form handling, live preview, PNG/SVG downloads
+js/ads-config.js                   Adsterra banner codes; ads are off while empty
+js/ads.js                          Shows the banner box and its sandboxed ad frame
+ad/index.html, ad/frame.js         The ad frame: runs one Adsterra banner, sandboxed
 vendor/qrcode-generator-2.0.4.js   QR encoder library (pinned, unmodified)
 vendor/qrcode-generator-LICENSE.txt
 tests/logic.test.js                Unit tests for js/logic.js
 favicon.svg, favicon.ico, apple-touch-icon.png
-robots.txt, sitemap.xml            Replace example.com before deploying
+robots.txt, sitemap.xml            Replace example.com if the site gets its own domain
+privacy.html                       Privacy policy, including the Adsterra disclosure
 _headers                           Cloudflare Pages headers (CSP, caching)
 404.html                           Not-found page
 ```
@@ -73,13 +73,32 @@ _headers                           Cloudflare Pages headers (CSP, caching)
 
 There is nothing else: no framework, bundler or npm install.
 
-## Adding an ad later
+## Ads (Adsterra)
 
-`index.html` has an empty `<aside class="ad-slot" id="ad-slot" hidden>` between the generator and the help section. It's hidden and takes up no space. To use it:
+There is one small banner below the generator, labelled "Advertisement": 468×60 on wider screens and 320×50 on phones. Its size is fixed, so the page doesn't jump when an ad loads. It never covers the form or the preview.
 
-1. Put the ad markup inside it and remove the `hidden` attribute (`.ad-slot` already centres content up to 728 px wide).
-2. Loosen the Content-Security-Policy in `_headers` for the ad network's domains (usually `script-src`, `img-src`, `frame-src` and `connect-src`).
-3. Review the privacy wording on the page. Most ad networks collect data, so "no tracking" in the footer would need to change.
+**Each ad runs in its own sandboxed frame** (`ad/index.html`, opened with `sandbox` and no `allow-same-origin`). The ad code gets an opaque origin, so it can't read the generator page, what people type (including Wi-Fi passwords) or the downloads. The generator page keeps its strict policy. Only `/ad/*` gets a separate one in `_headers`.
+
+**Ads are off until you add banner codes.** Until then the box is hidden and takes up no space. To see where the banner goes and how big it is, add `?adpreview` to the end of the address. This shows an empty dashed box and loads nothing.
+
+### Turning on ads
+
+1. In Adsterra, go to *Websites → your site → Add ad unit* and create a **Banner 468×60** unit and a **Banner 320×50** unit. Don't use Popunder or Social Bar units; they aren't supported here.
+2. Each unit's code contains a line like this:
+
+   ```html
+   <script src="//www.highperformanceformat.com/0123456789abcdef0123456789abcdef/invoke.js"></script>
+   ```
+
+   Paste just the `src` address into `js/ads-config.js` next to the matching size:
+
+   ```js
+   '468x60': '//www.highperformanceformat.com/0123456789abcdef0123456789abcdef/invoke.js',
+   ```
+
+3. Push to GitHub, keeping the folders.
+
+If only one size is filled in, screens that need the other size show no ad. If an entry doesn't look like an Adsterra address, the browser console shows an error naming it.
 
 ## Limitations
 

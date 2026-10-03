@@ -383,13 +383,45 @@ input[type="color"] {
   font-size: 0.85rem;
 }
 
-/* --- Future ad slot (hidden until used) -------------------------------- */
+/* --- Ad banner (hidden until js/ads-config.js has a banner code) ------- */
 
 .ad-slot {
-  margin: 32px auto 0;
-  max-width: 728px;
+  /* Bleed into the 16px page gutter so a 320px banner fits a 320px phone. */
+  margin: 32px -16px 0;
+  overflow: hidden;
   text-align: center;
 }
+
+.ad-label {
+  margin: 0 0 4px;
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* js/ads.js sets the exact size (468×60, or 320×50 on phones) before the ad
+   loads, so the page never jumps. */
+.ad-box {
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  vertical-align: top;
+}
+
+.ad-box iframe { display: block; border: 0; }
+
+.ad-placeholder {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px dashed var(--border);
+  border-radius: 6px;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.policy { padding-top: 40px; }
 
 /* --- Info / FAQ -------------------------------------------------------- */
 
